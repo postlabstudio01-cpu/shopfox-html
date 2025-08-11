@@ -1,0 +1,997 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SHOPFOX - Compare Prices & Save</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-orange: #FF6B35;
+            --dark-orange: #E55A2B;
+            --light-orange: #FFD8CC;
+            --white: #FFFFFF;
+            --black: #121212;
+            --gray: #F5F5F5;
+            --text-gray: #555555;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--white);
+            color: var(--black);
+            line-height: 1.6;
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px 0;
+        }
+        
+        /* Header Styles */
+        header {
+            background-color: var(--white);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo {
+            width: 50px;
+            height: 50px;
+            background-color: var(--primary-orange);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 15px;
+        }
+        
+        .logo i {
+            color: var(--white);
+            font-size: 24px;
+        }
+        
+        .logo-text {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary-orange);
+        }
+        
+        /* Search Bar Styles */
+        .search-container {
+            flex: 1;
+            max-width: 600px;
+            margin: 0 20px;
+        }
+        
+        .search-bar {
+            display: flex;
+            align-items: center;
+            background-color: var(--light-orange);
+            border-radius: 30px;
+            padding: 5px 15px;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .search-bar:focus-within {
+            border-color: var(--primary-orange);
+            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.2);
+        }
+        
+        .search-bar input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            padding: 10px;
+            font-size: 16px;
+            outline: none;
+        }
+        
+        .search-bar button {
+            background-color: var(--primary-orange);
+            border: none;
+            color: var(--white);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: background-color 0.3s ease;
+        }
+        
+        .search-bar button:hover {
+            background-color: var(--dark-orange);
+        }
+        
+        /* Navigation */
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 20px;
+        }
+        
+        nav ul li a {
+            text-decoration: none;
+            color: var(--black);
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        
+        nav ul li a:hover {
+            color: var(--primary-orange);
+        }
+        
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--primary-orange), var(--dark-orange));
+            color: var(--white);
+            padding: 60px 0;
+            text-align: center;
+            border-radius: 10px;
+            margin: 30px 0;
+        }
+        
+        .hero h1 {
+            font-size: 36px;
+            margin-bottom: 20px;
+        }
+        
+        .hero p {
+            font-size: 18px;
+            max-width: 700px;
+            margin: 0 auto 30px;
+        }
+        
+        .btn {
+            display: inline-block;
+            background-color: var(--white);
+            color: var(--primary-orange);
+            padding: 12px 30px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: 2px solid var(--white);
+        }
+        
+        .btn:hover {
+            background-color: transparent;
+            color: var(--white);
+        }
+        
+        /* Section Styles */
+        .section {
+            margin: 50px 0;
+        }
+        
+        .section-title {
+            font-size: 28px;
+            margin-bottom: 30px;
+            text-align: center;
+            position: relative;
+            padding-bottom: 15px;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background-color: var(--primary-orange);
+        }
+        
+        /* Categories Section */
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 20px;
+        }
+        
+        .category-card {
+            background-color: var(--white);
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .category-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        .category-icon {
+            font-size: 36px;
+            color: var(--primary-orange);
+            margin-bottom: 15px;
+        }
+        
+        .category-name {
+            font-weight: 600;
+            font-size: 16px;
+        }
+        
+        /* Product Cards */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px;
+        }
+        
+        .product-card {
+            background-color: var(--white);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+        
+        .product-image {
+            height: 200px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .product-card:hover .product-image img {
+            transform: scale(1.05);
+        }
+        
+        .product-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: var(--primary-orange);
+            color: var(--white);
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .product-info {
+            padding: 20px;
+        }
+        
+        .product-name {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .price-comparison {
+            display: flex;
+            justify-content: space-between;
+            margin: 15px 0;
+        }
+        
+        .price-platform {
+            text-align: center;
+            flex: 1;
+        }
+        
+        .platform-name {
+            font-size: 14px;
+            color: var(--text-gray);
+            margin-bottom: 5px;
+        }
+        
+        .price {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--black);
+        }
+        
+        .best-price {
+            color: var(--primary-orange);
+        }
+        
+        .product-links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+        }
+        
+        .product-link {
+            flex: 1;
+            text-align: center;
+            padding: 8px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .amazon-link {
+            background-color: #FF9900;
+            color: var(--white);
+        }
+        
+        .amazon-link:hover {
+            background-color: #E47911;
+        }
+        
+        .flipkart-link {
+            background-color: #2874F0;
+            color: var(--white);
+            margin-left: 10px;
+        }
+        
+        .flipkart-link:hover {
+            background-color: #1A5CB0;
+        }
+        
+        /* Footer */
+        footer {
+            background-color: var(--black);
+            color: var(--white);
+            padding: 40px 0 20px;
+            margin-top: 50px;
+        }
+        
+        .footer-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+        
+        .footer-column {
+            flex: 1;
+            min-width: 200px;
+            margin-bottom: 30px;
+        }
+        
+        .footer-column h3 {
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: var(--primary-orange);
+        }
+        
+        .footer-column ul {
+            list-style: none;
+        }
+        
+        .footer-column ul li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-column ul li a {
+            color: var(--white);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .footer-column ul li a:hover {
+            color: var(--primary-orange);
+        }
+        
+        .about-us {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .social-links {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        
+        .social-links a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            margin: 0 10px;
+            color: var(--white);
+            transition: all 0.3s ease;
+        }
+        
+        .social-links a:hover {
+            background-color: var(--primary-orange);
+        }
+        
+        /* Signup Page Styles */
+        .signup-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--light-orange), var(--white));
+        }
+        
+        .signup-form {
+            background-color: var(--white);
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 450px;
+        }
+        
+        .signup-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .signup-header .logo {
+            margin: 0 auto 15px;
+        }
+        
+        .signup-header h2 {
+            font-size: 28px;
+            color: var(--primary-orange);
+            margin-bottom: 10px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-group input:focus {
+            border-color: var(--primary-orange);
+            outline: none;
+        }
+        
+        .signup-btn {
+            width: 100%;
+            padding: 14px;
+            background-color: var(--primary-orange);
+            color: var(--white);
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        
+        .signup-btn:hover {
+            background-color: var(--dark-orange);
+        }
+        
+        .login-link {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+        }
+        
+        .login-link a {
+            color: var(--primary-orange);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+            }
+            
+            .logo-container {
+                margin-bottom: 20px;
+            }
+            
+            .search-container {
+                width: 100%;
+                margin: 0 0 20px;
+            }
+            
+            nav ul {
+                margin-top: 15px;
+            }
+            
+            .hero h1 {
+                font-size: 28px;
+            }
+            
+            .products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+            
+            .categories-grid {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            }
+            
+            .footer-column {
+                flex: 100%;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Signup Page -->
+    <div id="signup-page" class="signup-container">
+        <div class="signup-form">
+            <div class="signup-header">
+                <div class="logo">
+                    <i class="fas fa-shopping-bag"></i>
+                </div>
+                <h2>SHOPFOX</h2>
+                <p>Create an account to compare prices and save money</p>
+            </div>
+            <form id="signup-form">
+                <div class="form-group">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" placeholder="Enter your full name" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" placeholder="Enter your email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="Create a password" required>
+                </div>
+                <div class="form-group">
+                    <label for="confirm-password">Confirm Password</label>
+                    <input type="password" id="confirm-password" placeholder="Confirm your password" required>
+                </div>
+                <button type="submit" class="signup-btn">Sign Up</button>
+                <div class="login-link">
+                    Already have an account? <a href="#" id="login-link">Log In</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main App Content (Hidden initially) -->
+    <div id="app-content" style="display: none;">
+        <!-- Header -->
+        <header>
+            <div class="container header-container">
+                <div class="logo-container">
+                    <div class="logo">
+                        <i class="fas fa-shopping-bag"></i>
+                    </div>
+                    <div class="logo-text">SHOPFOX</div>
+                </div>
+                
+                <div class="search-container">
+                    <div class="search-bar">
+                        <input type="text" placeholder="Search for products, brands and more...">
+                        <button type="button">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <nav>
+                    <ul>
+                        <li><a href="#">Home</a></li>
+                        <li><a href="#">Categories</a></li>
+                        <li><a href="#">Deals</a></li>
+                        <li><a href="#">Account</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </header>
+
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="container">
+                <h1>Compare Prices, Save Money</h1>
+                <p>SHOPFOX helps you find the best deals across Amazon, Flipkart and other top retailers. Never overpay again!</p>
+                <a href="#" class="btn">Start Comparing Now</a>
+            </div>
+        </section>
+
+        <!-- Categories Section -->
+        <section class="section">
+            <div class="container">
+                <h2 class="section-title">Shop by Category</h2>
+                <div class="categories-grid">
+                    <div class="category-card">
+                        <div class="category-icon">
+                            <i class="fas fa-mobile-alt"></i>
+                        </div>
+                        <div class="category-name">Mobile Phones</div>
+                    </div>
+                    <div class="category-card">
+                        <div class="category-icon">
+                            <i class="fas fa-laptop"></i>
+                        </div>
+                        <div class="category-name">Laptops</div>
+                    </div>
+                    <div class="category-card">
+                        <div class="category-icon">
+                            <i class="fas fa-tv"></i>
+                        </div>
+                        <div class="category-name">TV & Appliances</div>
+                    </div>
+                    <div class="category-card">
+                        <div class="category-icon">
+                            <i class="fas fa-tshirt"></i>
+                        </div>
+                        <div class="category-name">Fashion</div>
+                    </div>
+                    <div class="category-card">
+                        <div class="category-icon">
+                            <i class="fas fa-couch"></i>
+                        </div>
+                        <div class="category-name">Home & Furniture</div>
+                    </div>
+                    <div class="category-card">
+                        <div class="category-icon">
+                            <i class="fas fa-book"></i>
+                        </div>
+                        <div class="category-name">Books</div>
+                    </div>
+                    <div class="category-card">
+                        <div class="category-icon">
+                            <i class="fas fa-dumbbell"></i>
+                        </div>
+                        <div class="category-name">Sports & Fitness</div>
+                    </div>
+                    <div class="category-card">
+                        <div class="category-icon">
+                            <i class="fas fa-gamepad"></i>
+                        </div>
+                        <div class="category-name">Gaming</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Trending Phones Section -->
+        <section class="section">
+            <div class="container">
+                <h2 class="section-title">Trending Phones</h2>
+                <div class="products-grid">
+                    <!-- Product 1 -->
+                    <div class="product-card">
+                        <div class="product-image">
+                            <img src="https://images.unsplash.com/photo-1592750475338-74b7b21085ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="iPhone 15 Pro">
+                            <div class="product-badge">Best Deal</div>
+                        </div>
+                        <div class="product-info">
+                            <h3 class="product-name">iPhone 15 Pro (128GB)</h3>
+                            <div class="price-comparison">
+                                <div class="price-platform">
+                                    <div class="platform-name">Amazon</div>
+                                    <div class="price">₹1,34,900</div>
+                                </div>
+                                <div class="price-platform">
+                                    <div class="platform-name">Flipkart</div>
+                                    <div class="price best-price">₹1,29,999</div>
+                                </div>
+                            </div>
+                            <div class="product-links">
+                                <a href="https://www.amazon.in/dp/B0CHX1W1XY" target="_blank" class="product-link amazon-link">Amazon</a>
+                                <a href="https://www.flipkart.com/apple-iphone-15-pro-blue-128-gb/p/itmdb77f40da6b6d" target="_blank" class="product-link flipkart-link">Flipkart</a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Product 2 -->
+                    <div class="product-card">
+                        <div class="product-image">
+                            <img src="https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Samsung Galaxy S23">
+                            <div class="product-badge">Trending</div>
+                        </div>
+                        <div class="product-info">
+                            <h3 class="product-name">Samsung Galaxy S23 (256GB)</h3>
+                            <div class="price-comparison">
+                                <div class="price-platform">
+                                    <div class="platform-name">Amazon</div>
+                                    <div class="price best-price">₹74,999</div>
+                                </div>
+                                <div class="price-platform">
+                                    <div class="platform-name">Flipkart</div>
+                                    <div class="price">₹77,999</div>
+                                </div>
+                            </div>
+                            <div class="product-links">
+                                <a href="https://www.amazon.in/dp/B0BSXFNLKP" target="_blank" class="product-link amazon-link">Amazon</a>
+                                <a href="https://www.flipkart.com/samsung-galaxy-s23-5g-cream-256-gb/p/itm0c5c941b9c9b2" target="_blank" class="product-link flipkart-link">Flipkart</a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Product 3 -->
+                    <div class="product-card">
+                        <div class="product-image">
+                            <img src="https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="OnePlus 11R">
+                            <div class="product-badge">Best Value</div>
+                        </div>
+                        <div class="product-info">
+                            <h3 class="product-name">OnePlus 11R (256GB)</h3>
+                            <div class="price-comparison">
+                                <div class="price-platform">
+                                    <div class="platform-name">Amazon</div>
+                                    <div class="price">₹39,999</div>
+                                </div>
+                                <div class="price-platform">
+                                    <div class="platform-name">Flipkart</div>
+                                    <div class="price best-price">₹38,999</div>
+                                </div>
+                            </div>
+                            <div class="product-links">
+                                <a href="https://www.amazon.in/dp/B0BY1JQ1CQ" target="_blank" class="product-link amazon-link">Amazon</a>
+                                <a href="https://www.flipkart.com/oneplus-11r-5g-galactic-silver-256-gb/p/itm0c5c941b9c9b2" target="_blank" class="product-link flipkart-link">Flipkart</a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Product 4 -->
+                    <div class="product-card">
+                        <div class="product-image">
+                            <img src="https://images.unsplash.com/photo-1592750475338-74b7b21085ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Google Pixel 8">
+                            <div class="product-badge">New Launch</div>
+                        </div>
+                        <div class="product-info">
+                            <h3 class="product-name">Google Pixel 8 (128GB)</h3>
+                            <div class="price-comparison">
+                                <div class="price-platform">
+                                    <div class="platform-name">Amazon</div>
+                                    <div class="price best-price">₹69,999</div>
+                                </div>
+                                <div class="price-platform">
+                                    <div class="platform-name">Flipkart</div>
+                                    <div class="price">₹73,999</div>
+                                </div>
+                            </div>
+                            <div class="product-links">
+                                <a href="https://www.amazon.in/dp/B0CHX1W1XY" target="_blank" class="product-link amazon-link">Amazon</a>
+                                <a href="https://www.flipkart.com/google-pixel-8-5g-hazel-128-gb/p/itm0c5c941b9c9b2" target="_blank" class="product-link flipkart-link">Flipkart</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Trending Laptops Section -->
+        <section class="section">
+            <div class="container">
+                <h2 class="section-title">Trending Laptops</h2>
+                <div class="products-grid">
+                    <!-- Laptop 1 -->
+                    <div class="product-card">
+                        <div class="product-image">
+                            <img src="https://images.unsplash.com/photo-1496181133206-80ce9b88a853?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="MacBook Air M2">
+                            <div class="product-badge">Best Seller</div>
+                        </div>
+                        <div class="product-info">
+                            <h3 class="product-name">MacBook Air M2 (8GB/256GB)</h3>
+                            <div class="price-comparison">
+                                <div class="price-platform">
+                                    <div class="platform-name">Amazon</div>
+                                    <div class="price">₹1,04,990</div>
+                                </div>
+                                <div class="price-platform">
+                                    <div class="platform-name">Flipkart</div>
+                                    <div class="price best-price">₹99,990</div>
+                                </div>
+                            </div>
+                            <div class="product-links">
+                                <a href="https://www.amazon.in/dp/B0B3C2VQKZ" target="_blank" class="product-link amazon-link">Amazon</a>
+                                <a href="https://www.flipkart.com/apple-macbook-air-m2-midnight-8-gb-256-gb-ssd/p/itm0c5c941b9c9b2" target="_blank" class="product-link flipkart-link">Flipkart</a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Laptop 2 -->
+                    <div class="product-card">
+                        <div class="product-image">
+                            <img src="https://images.unsplash.com/photo-1541807084-5c52b6b3adef?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Dell XPS 13">
+                            <div class="product-badge">Premium</div>
+                        </div>
+                        <div class="product-info">
+                            <h3 class="product-name">Dell XPS 13 (12th Gen i7/16GB/512GB)</h3>
+                            <div class="price-comparison">
+                                <div class="price-platform">
+                                    <div class="platform-name">Amazon</div>
+                                    <div class="price best-price">₹1,29,990</div>
+                                </div>
+                                <div class="price-platform">
+                                    <div class="platform-name">Flipkart</div>
+                                    <div class="price">₹1,34,990</div>
+                                </div>
+                            </div>
+                            <div class="product-links">
+                                <a href="https://www.amazon.in/dp/B09V3JQN2J" target="_blank" class="product-link amazon-link">Amazon</a>
+                                <a href="https://www.flipkart.com/dell-xps-13-9310-core-i7-11th-gen-16-gb-512-gb-ssd/p/itm0c5c941b9c9b2" target="_blank" class="product-link flipkart-link">Flipkart</a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Laptop 3 -->
+                    <div class="product-card">
+                        <div class="product-image">
+                            <img src="https://images.unsplash.com/photo-1593642632823-8f785ba67e45?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="HP Pavilion">
+                            <div class="product-badge">Best Value</div>
+                        </div>
+                        <div class="product-info">
+                            <h3 class="product-name">HP Pavilion 15 (i5/16GB/512GB)</h3>
+                            <div class="price-comparison">
+                                <div class="price-platform">
+                                    <div class="platform-name">Amazon</div>
+                                    <div class="price">₹64,990</div>
+                                </div>
+                                <div class="price-platform">
+                                    <div class="platform-name">Flipkart</div>
+                                    <div class="price best-price">₹62,990</div>
+                                </div>
+                            </div>
+                            <div class="product-links">
+                                <a href="https://www.amazon.in/dp/B0B8W1W4T4" target="_blank" class="product-link amazon-link">Amazon</a>
+                                <a href="https://www.flipkart.com/hp-pavilion-15-eg2023tx-core-i5-12th-gen-16-gb-512-gb-ssd/p/itm0c5c941b9c9b2" target="_blank" class="product-link flipkart-link">Flipkart</a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Laptop 4 -->
+                    <div class="product-card">
+                        <div class="product-image">
+                            <img src="https://images.unsplash.com/photo-1603302576837-37561b2e2302?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Lenovo Legion">
+                            <div class="product-badge">Gaming</div>
+                        </div>
+                        <div class="product-info">
+                            <h3 class="product-name">Lenovo Legion 5 (Ryzen 7/16GB/1TB SSD)</h3>
+                            <div class="price-comparison">
+                                <div class="price-platform">
+                                    <div class="platform-name">Amazon</div>
+                                    <div class="price best-price">₹1,09,990</div>
+                                </div>
+                                <div class="price-platform">
+                                    <div class="platform-name">Flipkart</div>
+                                    <div class="price">₹1,14,990</div>
+                                </div>
+                            </div>
+                            <div class="product-links">
+                                <a href="https://www.amazon.in/dp/B0B3C2VQKZ" target="_blank" class="product-link amazon-link">Amazon</a>
+                                <a href="https://www.flipkart.com/lenovo-legion-5-82jw01axin-core-i7-11th-gen-16-gb-1-tb-ssd/p/itm0c5c941b9c9b2" target="_blank" class="product-link flipkart-link">Flipkart</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer>
+            <div class="container">
+                <div class="footer-container">
+                    <div class="footer-column">
+                        <h3>About SHOPFOX</h3>
+                        <p>We help you find the best prices across top e-commerce platforms. Save time and money with our price comparison tool.</p>
+                    </div>
+                    
+                    <div class="footer-column">
+                        <h3>Quick Links</h3>
+                        <ul>
+                            <li><a href="#">Home</a></li>
+                            <li><a href="#">Categories</a></li>
+                            <li><a href="#">Deals</a></li>
+                            <li><a href="#">Trending</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="footer-column">
+                        <h3>Partners</h3>
+                        <ul>
+                            <li><a href="#">Amazon</a></li>
+                            <li><a href="#">Flipkart</a></li>
+                            <li><a href="#">Croma</a></li>
+                            <li><a href="#">Reliance Digital</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="footer-column">
+                        <h3>Contact Us</h3>
+                        <ul>
+                            <li><a href="#">support@shopfox.com</a></li>
+                            <li><a href="#">+91 6301606035</a></li>
+                            <li><a href="#">FAQ</a></li>
+                            <li><a href="#">Feedback</a></li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="about-us">
+                    <p>SHOPFOX.trends.in - Your trusted price comparison platform</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Signup form submission
+        document.getElementById('signup-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Hide signup page and show app content
+            document.getElementById('signup-page').style.display = 'none';
+            document.getElementById('app-content').style.display = 'block';
+        });
+        
+        // Login link (for demo purposes, just show the app content)
+        document.getElementById('login-link').addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Hide signup page and show app content
+            document.getElementById('signup-page').style.display = 'none';
+            document.getElementById('app-content').style.display = 'block';
+        });
+        
+        // Category card click functionality
+        document.querySelectorAll('.category-card').forEach(card => {
+            card.addEventListener('click', function() {
+                const categoryName = this.querySelector('.category-name').textContent;
+                alert(`You clicked on ${categoryName} category. In a real app, this would take you to the ${categoryName} products page.`);
+            });
+        });
+    </script>
+</body>
+</html>
