@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SHOPFOX - Compare Amazon & Flipkart Prices</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-orange: #FF5722;
+            --dark-orange: #E64A19;
+            --light-orange: #FFAB91;
+            --white: #FFFFFF;
+            --black: #212121;
+            --gray: #757575;
+            --light-gray: #F5F5F5;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--light-gray);
+            color: var(--black);
+        }
+
+        /* Header Styles */
+        header {
+            background-color: var(--white);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 5%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo i {
+            font-size: 2.5rem;
+            color: var(--primary-orange);
+            margin-right: 10px;
+        }
+
+        .logo h1 {
+            font-size: 2rem;
+            color: var(--black);
+            font-weight: 700;
+        }
+
+        .logo span {
+            color: var(--primary-orange);
+        }
+
+        /* Search Bar */
+        .search-container {
+            flex-grow: 1;
+            max-width: 600px;
+            margin: 0 30px;
+        }
+
+        .search-bar {
+            display: flex;
+            border: 2px solid var(--primary-orange);
+            border-radius: 50px;
+            overflow: hidden;
+        }
+
+        .search-bar input {
+            flex-grow: 1;
+            padding: 12px 20px;
+            border: none;
+            outline: none;
+            font-size: 1rem;
+        }
+
+        .search-bar button {
+            background-color: var(--primary-orange);
+            color: var(--white);
+            border: none;
+            padding: 0 20px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .search-bar button:hover {
+            background-color: var(--dark-orange);
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--primary-orange), var(--dark-orange));
+            color: var(--white);
+            padding: 40px 5%;
+            text-align: center;
+        }
+
+        .hero h2 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto 30px;
+        }
+
+        /* Categories */
+        .categories {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .category-btn {
+            background-color: var(--white);
+            color: var(--primary-orange);
+            border: 2px solid var(--white);
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .category-btn:hover, .category-btn.active {
+            background-color: transparent;
+            color: var(--white);
+            border-color: var(--white);
+        }
+
+        /* Products Section */
+        .products-section {
+            padding: 50px 5%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            margin-bottom: 30px;
+            text-align: center;
+            position: relative;
+            color: var(--black);
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background-color: var(--primary-orange);
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .product-card {
+            background-color: var(--white);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .product-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .product-image {
+            height: 200px;
+            overflow: hidden;
+            background-color: #f9f9f9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .product-image img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            transition: transform 0.5s;
+        }
+
+        .product-image .fallback-icon {
+            font-size: 4rem;
+            color: var(--gray);
+        }
+
+        .product-card:hover .product-image img {
+            transform: scale(1.05);
+        }
+
+        .product-info {
+            padding: 20px;
+        }
+
+        .product-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--black);
+        }
+
+        .price-comparison {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .price-box {
+            text-align: center;
+            flex: 1;
+            padding: 10px;
+        }
+
+        .price-box.amazon {
+            background-color: #FF9900;
+            color: var(--white);
+            border-radius: 5px 0 0 5px;
+        }
+
+        .price-box.flipkart {
+            background-color: #2874F0;
+            color: var(--white);
+            border-radius: 0 5px 5px 0;
+        }
+
+        .price-label {
+            font-size: 0.8rem;
+            margin-bottom: 5px;
+        }
+
+        .price-value {
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        .best-price {
+            background-color: #4CAF50;
+        }
+
+        .product-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-amazon {
+            background-color: #FF9900;
+            color: var(--white);
+        }
+
+        .btn-amazon:hover {
+            background-color: #E88B00;
+        }
+
+        .btn-flipkart {
+            background-color: #2874F0;
+            color: var(--white);
+        }
+
+        .btn-flipkart:hover {
+            background-color: #1A5EBE;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--black);
+            color: var(--white);
+            padding: 30px 5%;
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+        }
+
+        .footer-logo i {
+            font-size: 2rem;
+            color: var(--primary-orange);
+            margin-right: 10px;
+        }
+
+        .footer-logo h2 {
+            font-size: 1.8rem;
+        }
+
+        .footer-logo span {
+            color: var(--primary-orange);
+        }
+
+        .about-us {
+            margin-top: 20px;
+            font-size: 1.1rem;
+            color: var(--light-orange);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .search-container {
+                width: 100%;
+                margin: 0;
+            }
+
+            .hero h2 {
+                font-size: 2rem;
+            }
+
+            .products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <i class="fas fa-fox"></i>
+                <h1>SHOP<span>FOX</span></h1>
+            </div>
+            <div class="search-container">
+                <div class="search-bar">
+                    <input type="text" id="searchInput" placeholder="Search for products...">
+                    <button id="searchBtn"><i class="fas fa-search"></i></button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <h2>Find the Best Prices Across Amazon & Flipkart</h2>
+        <p>SHOPFOX compares prices from top e-commerce sites to help you save money on every purchase</p>
+        <div class="categories">
+            <button class="category-btn active" data-category="all">All Products</button>
+            <button class="category-btn" data-category="phones">Phones</button>
+            <button class="category-btn" data-category="dresses">Female Dresses</button>
+            <button class="category-btn" data-category="gaming">Gaming</button>
+            <button class="category-btn" data-category="tv">TV</button>
+            <button class="category-btn" data-category="books">Books</button>
+            <button class="category-btn" data-category="clothes">Clothes</button>
+            <button class="category-btn" data-category="gym">Gym Products</button>
+        </div>
+    </section>
+
+    <!-- Trending Products Section -->
+    <section class="products-section">
+        <h2 class="section-title">Trending Products</h2>
+        <div class="products-grid" id="productsGrid">
+            <!-- Products will be dynamically loaded here -->
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">
+                <i class="fas fa-fox"></i>
+                <h2>SHOP<span>FOX</span></h2>
+            </div>
+            <p class="about-us">About us: SHOPFOX.trends.in</p>
+        </div>
+    </footer>
+
+    <script>
+        // Sample product data with reliable image URLs
+        const products = [
+            {
+                id: 1,
+                name: "iPhone 15 Pro",
+                category: "phones",
+                image: "https://via.placeholder.com/600x400/FF9900/FFFFFF?text=iPhone+15+Pro",
+                icon: "fas fa-mobile-alt",
+                amazonPrice: 79999,
+                flipkartPrice: 78999,
+                amazonLink: "https://www.amazon.in/dp/B0CHX1W1XY",
+                flipkartLink: "https://www.flipkart.com/apple-iphone-15-pro-blue-256-gb/p/itm0a979d3a0a1a3"
+            },
+            {
+                id: 2,
+                name: "Samsung Galaxy S24",
+                category: "phones",
+                image: "https://via.placeholder.com/600x400/2874F0/FFFFFF?text=Samsung+Galaxy+S24",
+                icon: "fas fa-mobile-alt",
+                amazonPrice: 69999,
+                flipkartPrice: 72999,
+                amazonLink: "https://www.amazon.in/dp/B0CQX2J1JQ",
+                flipkartLink: "https://www.flipkart.com/samsung-galaxy-s24-5g-onyx-black-256-gb/p/itm0d3db9f3a0a1b4"
+            },
+            {
+                id: 3,
+                name: "Women's Summer Dress",
+                category: "dresses",
+                image: "https://via.placeholder.com/600x400/FF5722/FFFFFF?text=Summer+Dress",
+                icon: "fas fa-female",
+                amazonPrice: 1299,
+                flipkartPrice: 1199,
+                amazonLink: "https://www.amazon.in/dp/B0B4ZJ7W7X",
+                flipkartLink: "https://www.flipkart.com/women-dress/p/itm0f3c3b3a0a1b4"
+            },
+            {
+                id: 4,
+                name: "PlayStation 5",
+                category: "gaming",
+                image: "https://via.placeholder.com/600x400/003791/FFFFFF?text=PlayStation+5",
+                icon: "fas fa-gamepad",
+                amazonPrice: 49990,
+                flipkartPrice: 48990,
+                amazonLink: "https://www.amazon.in/dp/B08FC5L3RG",
+                flipkartLink: "https://www.flipkart.com/sony-playstation-5/p/itm0f3c3b3a0a1b4"
+            },
+            {
+                id: 5,
+                name: "55-inch 4K Smart TV",
+                category: "tv",
+                image: "https://via.placeholder.com/600x400/000000/FFFFFF?text=4K+Smart+TV",
+                icon: "fas fa-tv",
+                amazonPrice: 34999,
+                flipkartPrice: 32999,
+                amazonLink: "https://www.amazon.in/dp/B0B4ZJ7W7X",
+                flipkartLink: "https://www.flipkart.com/smart-tv/p/itm0f3c3b3a0a1b4"
+            },
+            {
+                id: 6,
+                name: "The Psychology of Money",
+                category: "books",
+                image: "https://via.placeholder.com/600x400/8B4513/FFFFFF?text=Psychology+of+Money",
+                icon: "fas fa-book",
+                amazonPrice: 499,
+                flipkartPrice: 399,
+                amazonLink: "https://www.amazon.in/dp/B0848D4Q4W",
+                flipkartLink: "https://www.flipkart.com/psychology-money/p/itm0f3c3b3a0a1b4"
+            },
+            {
+                id: 7,
+                name: "Men's Casual Shirt",
+                category: "clothes",
+                image: "https://via.placeholder.com/600x400/4169E1/FFFFFF?text=Men's+Shirt",
+                icon: "fas fa-tshirt",
+                amazonPrice: 899,
+                flipkartPrice: 799,
+                amazonLink: "https://www.amazon.in/dp/B0B4ZJ7W7X",
+                flipkartLink: "https://www.flipkart.com/mens-shirt/p/itm0f3c3b3a0a1b4"
+            },
+            {
+                id: 8,
+                name: "Adjustable Dumbbells",
+                category: "gym",
+                image: "https://via.placeholder.com/600x400/808080/FFFFFF?text=Dumbbells",
+                icon: "fas fa-dumbbell",
+                amazonPrice: 4999,
+                flipkartPrice: 4599,
+                amazonLink: "https://www.amazon.in/dp/B0B4ZJ7W7X",
+                flipkartLink: "https://www.flipkart.com/dumbbells/p/itm0f3c3b3a0a1b4"
+            },
+            {
+                id: 9,
+                name: "OnePlus Nord 3",
+                category: "phones",
+                image: "https://via.placeholder.com/600x400/FF0000/FFFFFF?text=OnePlus+Nord+3",
+                icon: "fas fa-mobile-alt",
+                amazonPrice: 32999,
+                flipkartPrice: 33999,
+                amazonLink: "https://www.amazon.in/dp/B0CQX2J1JQ",
+                flipkartLink: "https://www.flipkart.com/oneplus-nord-3-5g/p/itm0f3c3b3a0a1b4"
+            },
+            {
+                id: 10,
+                name: "Women's Formal Blazer",
+                category: "dresses",
+                image: "https://via.placeholder.com/600x400/000000/FFFFFF?text=Formal+Blazer",
+                icon: "fas fa-female",
+                amazonPrice: 2499,
+                flipkartPrice: 2299,
+                amazonLink: "https://www.amazon.in/dp/B0B4ZJ7W7X",
+                flipkartLink: "https://www.flipkart.com/women-blazer/p/itm0f3c3b3a0a1b4"
+            },
+            {
+                id: 11,
+                name: "Xbox Series X",
+                category: "gaming",
+                image: "https://via.placeholder.com/600x400/107C10/FFFFFF?text=Xbox+Series+X",
+                icon: "fas fa-gamepad",
+                amazonPrice: 44999,
+                flipkartPrice: 46999,
+                amazonLink: "https://www.amazon.in/dp/B08FC5L3RG",
+                flipkartLink: "https://www.flipkart.com/xbox-series-x/p/itm0f3c3b3a0a1b4"
+            },
+            {
+                id: 12,
+                name: "Yoga Mat",
+                category: "gym",
+                image: "https://via.placeholder.com/600x400/800080/FFFFFF?text=Yoga+Mat",
+                icon: "fas fa-spa",
+                amazonPrice: 999,
+                flipkartPrice: 899,
+                amazonLink: "https://www.amazon.in/dp/B0B4ZJ7W7X",
+                flipkartLink: "https://www.flipkart.com/yoga-mat/p/itm0f3c3b3a0a1b4"
+            }
+        ];
+
+        // DOM elements
+        const productsGrid = document.getElementById('productsGrid');
+        const searchInput = document.getElementById('searchInput');
+        const searchBtn = document.getElementById('searchBtn');
+        const categoryBtns = document.querySelectorAll('.category-btn');
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', () => {
+            displayProducts(products);
+            
+            // Search functionality
+            searchBtn.addEventListener('click', searchProducts);
+            searchInput.addEventListener('keyup', (e) => {
+                if (e.key === 'Enter') {
+                    searchProducts();
+                }
+            });
+            
+            // Category filter
+            categoryBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    // Update active button
+                    categoryBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    
+                    // Filter products
+                    const category = btn.getAttribute('data-category');
+                    if (category === 'all') {
+                        displayProducts(products);
+                    } else {
+                        const filtered = products.filter(p => p.category === category);
+                        displayProducts(filtered);
+                    }
+                });
+            });
+        });
+
+        // Display products
+        function displayProducts(productsToShow) {
+            productsGrid.innerHTML = '';
+            
+            if (productsToShow.length === 0) {
+                productsGrid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; font-size: 1.2rem;">No products found. Try a different search term.</p>';
+                return;
+            }
+            
+            productsToShow.forEach(product => {
+                const isAmazonCheaper = product.amazonPrice < product.flipkartPrice;
+                
+                const productCard = document.createElement('div');
+                productCard.className = 'product-card';
+                productCard.innerHTML = `
+                    <div class="product-image">
+                        <img src="${product.image}" alt="${product.name}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <div class="fallback-icon" style="display: none; align-items: center; justify-content: center; width: 100%; height: 100%;">
+                            <i class="${product.icon}" style="font-size: 4rem; color: var(--gray);"></i>
+                        </div>
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-name">${product.name}</h3>
+                        <div class="price-comparison">
+                            <div class="price-box amazon ${isAmazonCheaper ? 'best-price' : ''}">
+                                <div class="price-label">Amazon</div>
+                                <div class="price-value">₹${product.amazonPrice.toLocaleString('en-IN')}</div>
+                            </div>
+                            <div class="price-box flipkart ${!isAmazonCheaper ? 'best-price' : ''}">
+                                <div class="price-label">Flipkart</div>
+                                <div class="price-value">₹${product.flipkartPrice.toLocaleString('en-IN')}</div>
+                            </div>
+                        </div>
+                        <div class="product-actions">
+                            <a href="${product.amazonLink}" target="_blank" class="btn btn-amazon">View on Amazon</a>
+                            <a href="${product.flipkartLink}" target="_blank" class="btn btn-flipkart">View on Flipkart</a>
+                        </div>
+                    </div>
+                `;
+                
+                productsGrid.appendChild(productCard);
+            });
+        }
+
+        // Search products
+        function searchProducts() {
+            const searchTerm = searchInput.value.trim().toLowerCase();
+            
+            if (searchTerm === '') {
+                displayProducts(products);
+                return;
+            }
+            
+            const filtered = products.filter(product => 
+                product.name.toLowerCase().includes(searchTerm) ||
+                product.category.toLowerCase().includes(searchTerm)
+            );
+            
+            displayProducts(filtered);
+        }
+    </script>
+</body>
+</html>>
